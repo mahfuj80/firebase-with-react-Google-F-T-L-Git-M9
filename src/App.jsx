@@ -1,19 +1,37 @@
 import './App.css';
-import { getAuth, signInWithPopup, signOut } from 'firebase/auth';
+import {
+  TwitterAuthProvider,
+  getAuth,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
 import { GoogleAuthProvider } from 'firebase/auth';
 import app from './Firebase/firebase.init';
 import { useState } from 'react';
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+auth.languageCode = 'it';
+const googleProvider = new GoogleAuthProvider();
+const twitterProvider = new TwitterAuthProvider();
 function App() {
   const [user, setUser] = useState(null);
+  // handle Google Sign IN
   const handleGoogleSignIn = () => {
-    signInWithPopup(auth, provider)
+    signInWithPopup(auth, googleProvider)
       .then((res) => {
         setUser(res.user);
       })
       .catch((error) => {
         alert(error);
+      });
+  };
+  // handleFacebook Sign in
+  const handleTwitterSignIn = () => {
+    signInWithPopup(auth, twitterProvider)
+      .then((res) => {
+        setUser(res.user);
+      })
+      .catch((error) => {
+        return alert(error);
       });
   };
   const handleSignOut = () => {
@@ -30,9 +48,15 @@ function App() {
     <>
       <h1>React-With-Firebase</h1>
       {user ? (
-        <button onClick={handleSignOut}>Sign Out</button>
+        <>
+          <button onClick={handleSignOut}>Sign Out</button> <br />
+        </>
       ) : (
-        <button onClick={handleGoogleSignIn}>Sign In</button>
+        <>
+          <button onClick={handleGoogleSignIn}>Sign In Using Google</button>
+          <br />
+          <button onClick={handleTwitterSignIn}>Sign In Using Twitter</button>
+        </>
       )}
       {user && (
         <div>
